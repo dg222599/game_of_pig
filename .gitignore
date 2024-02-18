@@ -1,0 +1,5 @@
+go.mod
+go.sum
+long_result.txt
+short_result.txt
+results.txt
