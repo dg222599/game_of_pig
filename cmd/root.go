@@ -1,245 +1,3 @@
-// /*
-// Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-// */
-// package cmd
-
-// import (
-// 	"fmt"
-// 	"math/rand"
-// 	"os"
-// 	"strconv"
-// 	"time"
-
-// 	"github.com/spf13/cobra"
-// )
-
-// func HandleError(err error) {
-// 	fmt.Println("Exiting...Encountered error in -->" , err.Error())
-// 	os.Exit(1)
-// }
-
-// var (
-// 	flag1,flag2,totalGames,player1Start,player2Start,player1End,player2End int
-// 	resultType,resultSize string
-// )
-
-// // rootCmd represents the base command when called without any subcommands
-// var rootCmd = &cobra.Command{
-// 		Use:   "game_of_pig hold1 hold2",
-// 		Short: "It is a CLI based game involving 2 players.",
-// 		Long: `A longer description that spans multiple lines and likely contains
-// 				examples and usage of using your application. For example:
-
-// 				Cobra is a CLI library for Go that empowers applications.
-// 				This application is a tool to generate the needed files
-// 				to quickly create a Cobra application.`,
-// 	// Uncomment the following line if your bare application
-// 	// has an action associated with it:
-// 	 	Run: func(cmd *cobra.Command, args []string) {
-
-// 		player1strat,err  := strconv.Atoi(args[0])
-// 		HandleError(err)
-
-// 		player2strat,err  := strconv.Atoi(args[1])
-// 		HandleError(err)
-
-// 		player1flag,err := cmd.Flags().GetInt("f1")
-// 		HandleError(err)
-
-// 		player2flag,err := cmd.Flags().GetInt("f2")
-// 		HandleError(err)
-
-// 		resultsflag,err := cmd.Flags().GetString("v")
-// 		HandleError(err)
-
-// 		resultSize,err := cmd.Flags().GetString("s")
-// 		HandleError(err)
-
-// 		// var player1score,player2score,currentTurnScore,currentStrat,player1Wins,player2Wins,currentPlayer int64
-// 		var winPct,lossPct float64
-// 		var limit1,limit2 int
-// 		var shortResultFile,longResultFile *os.File
-
-// 		limit1 = 1
-// 		limit2 = 1
-
-// 		if player1flag !=1{
-// 			 if player1flag > player1strat {
-// 				 limit1 = player1flag
-// 			 } else {
-
-// 				fmt.Printf("Player 1 will hold only till %d no point in giving %d since it is lesser than %d\n\n",player1strat,player1flag,player1strat)
-// 				limit1 = player1strat
-// 			 }
-// 		}
-
-// 		if player2flag !=1{
-// 			if player2flag > player2strat {
-// 				limit2 = player2flag
-// 			} else {
-// 				fmt.Printf("Player 2 will hold only till %d no point in giving %d since it is lesser than %d\n\n",player2strat,player2flag,player2strat)
-// 				limit2 = player2strat
-// 			}
-// 		}
-
-// 		var fileOpenError error
-
-// 		if resultType != "" {
-// 			longResultFile,fileOpenError = os.Create("long_result.txt")
-// 			if fileOpenError!=nil{
-// 				fmt.Println("error in opening the long file-->",fileOpenError.Error())
-// 				os.Exit(1)
-// 			} else {
-// 				fmt.Println("Saving results in long format file long_result.txt")
-// 			}
-// 			defer longResultFile.Close()
-// 		}
-
-// 		if resultSize !=""{
-// 			shortResultFile,fileOpenError = os.Create("short_result.txt")
-// 			if fileOpenError!=nil{
-// 				fmt.Println("error in opening the short file-->",fileOpenError.Error())
-// 				os.Exit(1)
-// 			} else {
-// 				fmt.Println("Saving results in short format file short_result.txt")
-// 			}
-// 			defer shortResultFile.Close()
-// 		}
-
-// 		totalGames = (limit1 -1)*limit2
-
-// 		for player1times:=1;player1times<=limit1;player1times++ {
-// 				player1Wins = 0
-// 				player2Wins = 0
-// 			for player2times:=1;player2times<=limit2;player2times++{
-
-// 				player1strat = player1times
-// 				player2strat = player2times
-// 				if player1strat == player2strat {
-// 					continue
-// 				}
-// 				for gameNumber:=0;gameNumber<10;gameNumber++{
-
-// 					player1score = 0
-// 					player2score = 0
-
-// 					currentTurnScore = 0
-// 					currentStrat = int64(player1strat)
-// 					currentPlayer = 1
-
-// 					//will run as long as any one of the  player wins
-// 					for ; ; {
-
-// 						 //rolling the dice
-// 						 rand.NewSource(time.Now().UnixNano())
-// 						 diceNumber := rand.Intn(6) + 1
-
-// 						 if diceNumber == 1 {
-// 						   //player change happens now
-// 						   if currentPlayer == 1 {
-// 							   currentPlayer = 2
-// 							   currentStrat = int64(player2strat)
-// 						   } else {
-// 							   currentPlayer = 1
-// 							   currentStrat = int64(player1strat)
-// 						   }
-
-// 						   currentTurnScore = 0
-
-// 						 } else {
-
-// 							 currentTurnScore+=int64(diceNumber)
-
-// 							 if currentTurnScore>=currentStrat {
-
-// 								  if currentPlayer == 1 {
-// 									  player1score+=currentTurnScore
-// 									  currentPlayer = 2
-// 									  currentStrat = int64(player2strat)
-// 									  currentTurnScore = 0
-// 									  if player1score >=100 {
-// 										   break
-// 									  }
-// 								  } else {
-// 									  player2score+=currentTurnScore
-// 									  currentPlayer = 1
-// 									  currentStrat = int64(player1strat)
-// 									  currentTurnScore = 0
-// 									  if player2score >=100 {
-// 										   break
-// 									  }
-// 								  }
-
-// 							 }
-
-// 						 }
-
-// 					}
-
-// 					if player1score >= 100 {
-// 					   player1Wins++
-// 					} else {
-// 					   player2Wins++
-// 					}
-// 			  	}
-
-// 				if resultsflag != "" && resultSize!="" {
-// 					winPct = (float64(player1Wins)/10)*100
-// 					lossPct = (float64(player2Wins)/10)*100
-
-// 					_,err :=fmt.Fprintf(longResultFile,"Holding at %d vs Holding at %d: wins: %d/10 (%f%%), losses: %d/10 (%f%%)\n\n",player1strat,player2strat,
-// 					player1Wins,winPct,player2Wins,lossPct)
-// 					if err!=nil{
-// 						fmt.Println("error in writing the results in the file")
-// 						os.Exit(1)
-// 					}
-// 				}
-
-// 			}
-
-// 			if resultSize != "" {
-
-// 				winPct = (float64(player1Wins)/float64(totalGames))*100
-// 				lossPct = (float64(player2Wins)/float64(totalGames))*100
-
-// 				_,err :=fmt.Fprintf(shortResultFile,"Result: Wins, losses staying at k = %d: %d/%d (%f%%), %d/%d (%f%%)\n\n",player1strat,player1Wins,totalGames,winPct,player2strat,
-// 						totalGames,lossPct)
-// 				if err!=nil{
-// 					fmt.Println("error in writing the results in the file")
-// 					os.Exit(1)
-// 				}
-
-// 			}
-
-// 		}
-// 	},
-// }
-
-// // Execute adds all child commands to the root command and sets flags appropriately.
-// // This is called by main.main(). It only needs to happen once to the rootCmd.
-// func Execute() {
-// 	err := rootCmd.Execute()
-// 	if err != nil {
-// 		os.Exit(1)
-// 	}
-// }
-
-// func init() {
-// 	// Here you will define your flags and configuration settings.
-// 	// Cobra supports persistent flags, which, if defined here,
-// 	// will be global for your application.
-
-// 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.game_of_pig.yaml)")
-
-// 	// Cobra also supports local flags, which will only run
-// 	// when this action is called directly.
-// 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-// 	rootCmd.Flags().IntVar(&flag1,"f1",1,"Used for player 1 game type")
-// 	rootCmd.Flags().IntVar(&flag2,"f2",1,"Used for player 2 game type")
-// 	rootCmd.Flags().StringVar(&resultType,"v","","Used for specifying the results display format")
-// 	rootCmd.Flags().StringVar(&resultSize,"s","","Used for choosing the results size for display")
-// }
-
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
@@ -270,14 +28,13 @@ func HandleError(err error,msg string) {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "game_of_pig hold1 hold2",
+	Use:   "game_of_pig strategy1 strategy2 --f1=x --f2=y --v='y' --s='y'",
 	Short: "It is a CLI based game involving 2 players.",
-	Long: `A longer description that spans multiple lines and likely contains
-			examples and usage of using your application. For example:
-
-			Cobra is a CLI library for Go that empowers applications.
-			This application is a tool to generate the needed files
-			to quickly create a Cobra application.`,
+	Long: `The Game involves 2 players playing against each other both being computer in this case
+.Each player has a strategy to hold until X , where X is the total score they achieve
+by successive roll of dice , therefore eac player holds until the total of these rolls crosses 
+their hold strategy or they get a 1 , in case they get a 1 they lose all accumulated sum from
+that chance and the chance goes to next player. For each pair of strategies a set of 10 games is played.`,
 		// Uncomment the following line if your bare application
 		// has an action associated with it:
 	 Run: func(cmd *cobra.Command, args []string) {
@@ -338,7 +95,6 @@ var rootCmd = &cobra.Command{
 		  } else {
 			if player1End <player1Start{
 				player1Start = 1
-				
 			}
 		  }
 
@@ -475,11 +231,11 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.Flags().IntVar(&flag1,"f1",1,"Used for player 1 game type")
-	rootCmd.Flags().IntVar(&flag2,"f2",1,"Used for player 2 game type")
-	rootCmd.Flags().StringVar(&longResult,"v","","Used for specifying result format in long")
-	rootCmd.Flags().StringVar(&shortResult,"s","","Used for specifying the result format in short")
+	
+	rootCmd.Flags().IntVar(&flag1,"f1",1,"Used to specify the end limit if player1 needs to hold on different strategies.")
+	rootCmd.Flags().IntVar(&flag2,"f2",1,"Used to specify the end limit if player2 needs to hold on different strategies.")
+	rootCmd.Flags().StringVar(&longResult,"v","yes","Used to specify if the result needed in set wise format -long results(set to yes by default)")
+	rootCmd.Flags().StringVar(&shortResult,"s","","Used to specifying if the result needed in single strategy wise format -  short results , need non empty string to get short foramt results")
 }
 
 
